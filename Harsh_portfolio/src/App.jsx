@@ -246,7 +246,7 @@ export default function Portfolio() {
             width:100% !important;
             height:100% !important;
             object-fit:cover !important;
-            object-position:05% top !important;   /* 65% shows face, not arms */
+            object-position:35% top !important;   /* 65% shows face, not arms */
             mix-blend-mode:lighten !important;
             opacity:0.9 !important;
           }
