@@ -178,25 +178,65 @@ export default function Portfolio() {
         .ham-btn.open span:nth-child(2) { opacity:0; }
         .ham-btn.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
 
-        /* ── Mobile drawer ── */
-        .mobile-drawer {
+        /* ── Mobile drawer backdrop ── */
+        .mobile-drawer-backdrop {
           display:none;
-          position:fixed; top:0; left:0; right:0; bottom:0;
-          background:rgba(0,0,0,0.97);
+          position:fixed; inset:0;
+          background:rgba(0,0,0,0.45);
+          z-index:240;
+          backdrop-filter:blur(2px);
+          animation:fadeIn 0.25s ease;
+        }
+        .mobile-drawer-backdrop.open { display:block; }
+
+        /* ── Mobile drawer: right-side glass panel ── */
+        .mobile-drawer {
+          position:fixed; top:0; right:0; bottom:0;
+          width:min(75vw, 260px);
+          background:rgba(12,12,12,0.6);
+          backdrop-filter:blur(32px) saturate(1.8);
+          -webkit-backdrop-filter:blur(32px) saturate(1.8);
+          border-left:1px solid rgba(255,255,255,0.1);
+          box-shadow:-20px 0 60px rgba(0,0,0,0.55);
           z-index:250;
+          display:flex;
           flex-direction:column;
-          align-items:center; justify-content:center;
-          gap:32px;
-          backdrop-filter:blur(16px);
-          animation:fadeIn 0.2s ease;
+          align-items:flex-start;
+          justify-content:flex-start;
+          gap:4px;
+          padding:72px 28px 40px;
+          transform:translateX(100%);
+          transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);
         }
-        .mobile-drawer.open { display:flex; }
-        .mobile-drawer a, .mobile-drawer span {
-          font-size:26px; font-weight:700; color:#fff;
-          cursor:pointer; opacity:0.85;
-          transition:opacity 0.2s;
+        .mobile-drawer.open { transform:translateX(0); }
+        .mobile-drawer-label {
+          font-size:10px; font-weight:700; letter-spacing:3px;
+          text-transform:uppercase; color:rgba(255,255,255,0.28);
+          margin-bottom:12px; padding:0;
         }
-        .mobile-drawer a:hover, .mobile-drawer span:hover { opacity:0.4; }
+        .mobile-drawer-divider {
+          width:100%; height:1px;
+          background:rgba(255,255,255,0.07);
+          margin-bottom:16px;
+        }
+        .mobile-drawer a, .mobile-drawer span.drawer-link {
+          font-size:16px; font-weight:600; color:#fff;
+          cursor:pointer; opacity:0.72;
+          transition:opacity 0.18s, transform 0.18s, padding-left 0.18s;
+          padding:9px 0;
+          width:100%;
+          display:flex; align-items:center; gap:10px;
+          letter-spacing:0.2px;
+        }
+        .mobile-drawer a:hover, .mobile-drawer span.drawer-link:hover {
+          opacity:1; transform:translateX(5px);
+        }
+        .drawer-dot {
+          width:5px; height:5px; border-radius:50%;
+          background:rgba(255,255,255,0.3); flex-shrink:0;
+          transition:background 0.18s;
+        }
+        .mobile-drawer span.drawer-link:hover .drawer-dot { background:rgba(255,255,255,0.9); }
 
         /* Desktop nav ul */
         .nav-ul { display:flex; gap:28px; list-style:none; }
@@ -545,6 +585,27 @@ export default function Portfolio() {
 
         /* ══ CERTIFICATES SECTION ══ */
         @keyframes certFadeUp { from{opacity:0;transform:translateY(36px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes scrollNudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(7px)} }
+
+        .certs-scroll-hint {
+          display:flex; align-items:center; gap:10px;
+          margin-top:18px; margin-bottom:0;
+          color:rgba(255,255,255,0.3);
+          font-size:11px; font-weight:600; letter-spacing:2.5px;
+          text-transform:uppercase; user-select:none;
+        }
+        .certs-scroll-hint-arrows {
+          display:flex; align-items:center; gap:2px;
+        }
+        .certs-scroll-hint-arrows svg {
+          animation:scrollNudge 1.5s ease-in-out infinite;
+        }
+        .certs-scroll-hint-arrows svg:nth-child(2) {
+          animation-delay:0.18s; opacity:0.55;
+        }
+        .certs-scroll-hint-arrows svg:nth-child(3) {
+          animation-delay:0.36s; opacity:0.28;
+        }
 
         .certs-section { padding:100px 80px 90px; }
         @media(max-width:900px) { .certs-section { padding:80px 32px 60px !important; } }
@@ -1173,25 +1234,35 @@ export default function Portfolio() {
           </button>
         </nav>
 
-        {/* Mobile drawer */}
+        {/* Mobile drawer backdrop */}
+        <div
+          className={`mobile-drawer-backdrop${menuOpen ? " open" : ""}`}
+          onClick={() => setMenuOpen(false)}
+        />
+
+        {/* Mobile drawer – right-side glass panel */}
         <div className={`mobile-drawer${menuOpen ? " open" : ""}`}>
           {/* Close button */}
           <button
             onClick={() => setMenuOpen(false)}
             style={{
-              position:"absolute", top:22, right:22,
-              width:42, height:42, borderRadius:"50%",
-              background:"rgba(255,255,255,0.08)",
-              border:"1px solid rgba(255,255,255,0.2)",
-              color:"#fff", fontSize:20, lineHeight:1,
+              position:"absolute", top:16, right:16,
+              width:36, height:36, borderRadius:"50%",
+              background:"rgba(255,255,255,0.07)",
+              border:"1px solid rgba(255,255,255,0.15)",
+              color:"#fff", fontSize:16, lineHeight:1,
               cursor:"pointer", display:"flex",
               alignItems:"center", justifyContent:"center",
               transition:"background 0.2s",
             }}
             aria-label="Close menu"
           >✕</button>
+
+          <span className="mobile-drawer-label">Navigation</span>
+          <div className="mobile-drawer-divider" />
+
           {navLinks.map((link) => (
-            <span key={link} onClick={() => {
+            <span key={link} className="drawer-link" onClick={() => {
               setMenuOpen(false);
               if (link === "About") scrollTo("about");
               else if (link === "Tools") scrollTo("tools");
@@ -1199,7 +1270,10 @@ export default function Portfolio() {
               else if (link === "Certificates") scrollTo("certificates");
               else if (link === "Contact Me") scrollTo("contact");
               else if (link === "Home") scrollTo("home");
-            }}>{link}</span>
+            }}>
+              <span className="drawer-dot" />
+              {link}
+            </span>
           ))}
         </div>
 
@@ -1728,6 +1802,22 @@ export default function Portfolio() {
                 <div style={{ height:1, background:"rgba(255,255,255,0.08)", width:80 }} />
               </div>
               <span style={{ fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:1 }}>6 certificates</span>
+            </div>
+          </div>
+
+          {/* Scroll hint */}
+          <div className="certs-scroll-hint">
+            <span>Scroll to explore</span>
+            <div className="certs-scroll-hint-arrows">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
             </div>
           </div>
 
