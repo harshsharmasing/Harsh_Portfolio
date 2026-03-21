@@ -942,7 +942,7 @@ export default function Portfolio() {
             position:absolute !important;
             top:0 !important;
             bottom:auto !important;
-            right:-10% !important;
+            right:-40% !important;
             left:auto !important;
             transform:none !important;
             height:100% !important;
@@ -1210,6 +1210,7 @@ export default function Portfolio() {
                   else if (link === "Tools") scrollTo("tools");
                   else if (link === "Projects") scrollTo("projects");
                   else if (link === "Certificates") scrollTo("certificates");
+                  else if (link === "Education") scrollTo("education");
                   else if (link === "Contact Me") scrollTo("contact");
                   else if (link === "Home") scrollTo("home");
                 }}>
@@ -1268,6 +1269,7 @@ export default function Portfolio() {
               else if (link === "Tools") scrollTo("tools");
               else if (link === "Projects") scrollTo("projects");
               else if (link === "Certificates") scrollTo("certificates");
+              else if (link === "Education") scrollTo("education");
               else if (link === "Contact Me") scrollTo("contact");
               else if (link === "Home") scrollTo("home");
             }}>
