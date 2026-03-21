@@ -10,6 +10,8 @@ import cert1 from "./assets/cert1.jpg";
 import cert2 from "./assets/cert2.jpg";
 import cert3 from "./assets/cert3.jpg";
 import cert4 from "./assets/cert4.jpg";
+import cert5 from "./assets/cert5.jpg";
+import cert6 from "./assets/cert6.jpg";
 import harshcv from "./assets/harshcv.pdf";
 
 const LinkedInIcon = () => (
@@ -97,8 +99,10 @@ export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("Home");
   const [certVisible, setCertVisible] = useState(false);
+  const [eduVisible, setEduVisible]   = useState(false);
   const [previewCert, setPreviewCert] = useState(null);
   const certRef = useRef(null);
+  const eduRef  = useRef(null);
 
   // Scroll-spy: update active nav link as user scrolls
   useEffect(() => {
@@ -108,6 +112,7 @@ export default function Portfolio() {
       { id: "tools",        label: "Tools" },
       { id: "projects",     label: "Projects" },
       { id: "certificates", label: "Certificates" },
+      { id: "education",    label: "Education" },
       { id: "contact",      label: "Contact Me" },
     ];
     const onScroll = () => {
@@ -133,8 +138,17 @@ export default function Portfolio() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setEduVisible(true); },
+      { threshold: 0.05 }
+    );
+    if (eduRef.current) observer.observe(eduRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  const navLinks = ["Home", "About", "Tools", "Projects", "Certificates", "Contact Me"];
+  const navLinks = ["Home", "About", "Tools", "Projects", "Certificates", "Education", "Contact Me"];
 
   return (
     <>
@@ -537,32 +551,33 @@ export default function Portfolio() {
         @media(max-width:600px) { .certs-section { padding:72px 20px 52px !important; } }
 
         .certs-grid {
-          display:grid;
-          grid-template-columns:repeat(4,1fr);
+          display:flex;
+          flex-direction:row;
           gap:24px;
           margin-top:48px;
+          overflow-x:auto;
+          scroll-snap-type:x mandatory;
+          -webkit-overflow-scrolling:touch;
+          scrollbar-width:none;
+          padding-bottom:0;
+          cursor:grab;
         }
-        @media(max-width:1100px) { .certs-grid { grid-template-columns:1fr 1fr !important; } }
+        .certs-grid:active { cursor:grabbing; }
+        .certs-grid::-webkit-scrollbar { display:none; }
+
+        .cert-card {
+          flex:0 0 calc(25% - 18px);
+          scroll-snap-align:start;
+        }
+        @media(max-width:1100px) { .cert-card { flex:0 0 calc(50% - 12px) !important; } }
         @media(max-width:600px)  {
           .certs-grid {
-            display:flex !important;
-            flex-direction:row !important;
-            overflow-x:auto !important;
-            scroll-snap-type:x mandatory !important;
-            gap:16px !important;
             margin-left:-20px !important;
             margin-right:-20px !important;
             padding-left:20px !important;
             padding-right:20px !important;
-            -webkit-overflow-scrolling:touch;
-            scrollbar-width:none;
           }
-          .certs-grid::-webkit-scrollbar { display:none; }
-          .cert-card {
-            flex:0 0 80vw !important;
-            max-width:320px !important;
-            scroll-snap-align:start !important;
-          }
+          .cert-card { flex:0 0 80vw !important; max-width:300px !important; }
         }
 
         .cert-card {
@@ -676,6 +691,132 @@ export default function Portfolio() {
         .cert-view-btn:hover {
           background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.35);
           color:#fff;
+        }
+
+        /* ══ EDUCATION SECTION ══ */
+        @keyframes eduFadeUp { from{opacity:0;transform:translateY(36px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes eduLineGrow { from{width:0} to{width:100%} }
+        @keyframes dotPulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,200,0,0.4)} 50%{transform:scale(1.15);box-shadow:0 0 0 6px rgba(245,200,0,0)} }
+
+        .edu-section {
+          padding:100px 80px 90px;
+          background:#000;
+          position:relative;
+          overflow:hidden;
+        }
+        @media(max-width:900px) { .edu-section { padding:80px 32px 60px !important; } }
+        @media(max-width:600px) { .edu-section { padding:72px 20px 52px !important; } }
+
+        .edu-timeline {
+          position:relative;
+          margin-top:56px;
+          display:flex;
+          flex-direction:column;
+          gap:0;
+        }
+        .edu-timeline::before {
+          content:'';
+          position:absolute;
+          left:27px;
+          top:0; bottom:0;
+          width:2px;
+          background:linear-gradient(to bottom, rgba(245,200,0,0.6), rgba(245,200,0,0.1) 80%, transparent);
+        }
+
+        .edu-item {
+          display:grid;
+          grid-template-columns:56px 1fr;
+          gap:0 28px;
+          padding-bottom:48px;
+          position:relative;
+        }
+        .edu-item:last-child { padding-bottom:0; }
+
+        .edu-dot-col {
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          position:relative;
+        }
+        .edu-dot {
+          width:18px; height:18px; border-radius:50%;
+          background:#f5c800;
+          box-shadow:0 0 0 4px rgba(245,200,0,0.15), 0 0 16px rgba(245,200,0,0.35);
+          flex-shrink:0;
+          animation:dotPulse 2.4s ease-in-out infinite;
+          margin-top:4px;
+          position:relative; z-index:1;
+        }
+        .edu-dot.edu-dot-dim {
+          background:rgba(255,255,255,0.25);
+          box-shadow:0 0 0 4px rgba(255,255,255,0.05);
+          animation:none;
+        }
+
+        .edu-card {
+          background:linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+          border:1px solid rgba(255,255,255,0.09);
+          border-radius:20px;
+          padding:28px 32px;
+          position:relative;
+          overflow:hidden;
+          transition:border-color 0.35s, transform 0.35s, box-shadow 0.35s;
+          margin-bottom:4px;
+        }
+        .edu-card::before {
+          content:'';
+          position:absolute; top:0; left:0; right:0; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(245,200,0,0.5),transparent);
+          opacity:0; transition:opacity 0.35s;
+        }
+        .edu-card:hover { border-color:rgba(245,200,0,0.28); transform:translateX(6px); box-shadow:0 8px 32px rgba(245,200,0,0.08); }
+        .edu-card:hover::before { opacity:1; }
+
+        .edu-card-header { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
+        .edu-degree { font-size:17px; font-weight:800; color:#fff; letter-spacing:-0.3px; line-height:1.3; }
+        .edu-badge {
+          display:inline-flex; align-items:center; gap:6px;
+          padding:4px 12px; border-radius:999px;
+          font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+          border:1px solid rgba(245,200,0,0.35); color:#f5c800;
+          background:rgba(245,200,0,0.07);
+          white-space:nowrap; flex-shrink:0;
+        }
+        .edu-badge-done {
+          border-color:rgba(255,255,255,0.15); color:rgba(255,255,255,0.45);
+          background:rgba(255,255,255,0.04);
+        }
+        .edu-institution { font-size:13px; color:rgba(255,255,255,0.45); margin-bottom:6px; }
+        .edu-institution strong { color:rgba(255,255,255,0.72); font-weight:600; }
+        .edu-year { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-bottom:14px; }
+
+        .edu-progress-wrap { margin-top:12px; }
+        .edu-progress-label { display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.3); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
+        .edu-progress-bar {
+          height:3px; border-radius:999px;
+          background:rgba(255,255,255,0.07);
+          overflow:hidden;
+        }
+        .edu-progress-fill {
+          height:100%; border-radius:999px;
+          background:linear-gradient(90deg, #f5c800, rgba(245,200,0,0.4));
+          transition:width 1.2s ease;
+        }
+
+        .edu-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+        .edu-tag {
+          padding:3px 10px; border-radius:999px;
+          font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+          border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.45);
+          background:rgba(255,255,255,0.03);
+        }
+
+        @media(max-width:600px) {
+          .edu-timeline::before { left:19px !important; }
+          .edu-item { grid-template-columns:40px 1fr !important; gap:0 16px !important; }
+          .edu-dot { width:14px !important; height:14px !important; }
+          .edu-card { padding:20px 18px !important; }
+          .edu-degree { font-size:15px !important; }
         }
 
         /* ══ CONTACT SECTION ══ */
@@ -1586,7 +1727,7 @@ export default function Portfolio() {
                 </h2>
                 <div style={{ height:1, background:"rgba(255,255,255,0.08)", width:80 }} />
               </div>
-              <span style={{ fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:1 }}>4 certificates</span>
+              <span style={{ fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:1 }}>6 certificates</span>
             </div>
           </div>
 
@@ -1624,6 +1765,22 @@ export default function Portfolio() {
                 meta: "Issued: 12 Dec 2025  |  Length: 5.5 Hours  |  Cert No: UC-edc48522",
                 tags: ["Generative AI", "No-Code", "AI Tools"],
                 delay: 0.46,
+              },
+              {
+                img: cert5,
+                org: "LPU / IAMNEO",
+                title: "Java Programming",
+                meta: "Issued: 05 May 2025  |  Duration: Jan – May 2025  |  72 Hours  |  Cert No: 14bI5Ae0bf5Cg2Bh1Bi1",
+                tags: ["Java", "Programming", "72 Hours"],
+                delay: 0.58,
+              },
+              {
+                img: cert6,
+                org: "LPU / IAMNEO",
+                title: "Object Oriented Programming",
+                meta: "Issued: 05 Dec 2024  |  Duration: Aug – Dec 2024  |  72 Hours  |  Cert No: 17bg5Ch2Ai0D13d67",
+                tags: ["OOP", "Java", "72 Hours"],
+                delay: 0.70,
               },
             ].map(({ img, org, title, meta, tags, delay }, i) => (
               <div key={i} className="cert-card" style={{
@@ -1669,6 +1826,124 @@ export default function Portfolio() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div style={{
+            marginTop:72, height:1,
+            background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)",
+          }} />
+        </section>
+
+        {/* ══════════ EDUCATION ══════════ */}
+        <section id="education" className="edu-section" ref={eduRef}>
+
+          {/* Header */}
+          <div style={{ marginBottom:8 }}>
+            <p style={{ fontSize:12, letterSpacing:4, textTransform:"uppercase",
+              color:"rgba(255,255,255,0.35)", marginBottom:10 }}>MY JOURNEY</p>
+            <div style={{ display:"flex", alignItems:"center", gap:16 }}>
+              <h2 className="section-title" style={{ fontWeight:800, letterSpacing:-1 }}>
+                Education &amp; <span style={{ color:"rgba(255,255,255,0.3)" }}>Academics</span>
+              </h2>
+              <div style={{ height:1, background:"rgba(255,255,255,0.08)", width:80 }} />
+            </div>
+            <p style={{ marginTop:14, fontSize:13, color:"rgba(255,255,255,0.35)", maxWidth:480, lineHeight:1.8 }}>
+              The academic milestones that shaped my thinking and craft.
+            </p>
+          </div>
+
+          <div className="edu-timeline">
+
+            {/* ── LPU ── */}
+            <div className="edu-item" style={{ animation: eduVisible ? "eduFadeUp 0.65s ease 0.1s both" : "none", opacity: eduVisible ? undefined : 0 }}>
+              <div className="edu-dot-col">
+                <div className="edu-dot" />
+              </div>
+              <div>
+                <div className="edu-card">
+                  <div className="edu-card-header">
+                    <div>
+                      <div className="edu-degree">B.Tech · Computer Science &amp; Engineering</div>
+                      <div className="edu-institution">
+                        <strong>Lovely Professional University (LPU)</strong> — Phagwara, Punjab
+                      </div>
+                      <div className="edu-year">2023 – 2027 &nbsp;·&nbsp; 3rd Year · Ongoing</div>
+                    </div>
+                    <span className="edu-badge">
+                      <span style={{ width:6, height:6, borderRadius:"50%", background:"#f5c800", display:"inline-block", animation:"dotPulse 2s ease-in-out infinite" }} />
+                      Pursuing
+                    </span>
+                  </div>
+                  <div className="edu-progress-wrap">
+                    <div className="edu-progress-label">
+                      <span>Progress</span>
+                      <span>3 of 4 years complete</span>
+                    </div>
+                    <div className="edu-progress-bar">
+                      <div className="edu-progress-fill" style={{ width: eduVisible ? "75%" : "0%" }} />
+                    </div>
+                  </div>
+                  <div className="edu-tags">
+                    {["Full Stack Dev", "DSA", "DBMS", "OS", "Computer Networks", "AI/ML"].map(t => (
+                      <span key={t} className="edu-tag">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── 12th ── */}
+            <div className="edu-item" style={{ animation: eduVisible ? "eduFadeUp 0.65s ease 0.25s both" : "none", opacity: eduVisible ? undefined : 0 }}>
+              <div className="edu-dot-col">
+                <div className="edu-dot edu-dot-dim" />
+              </div>
+              <div>
+                <div className="edu-card">
+                  <div className="edu-card-header">
+                    <div>
+                      <div className="edu-degree">Class XII · Science Stream (PCM)</div>
+                      <div className="edu-institution">
+                        <strong>Sri Rani Saraswati Vidya Mandir</strong> — Forbesganj, Bihar
+                      </div>
+                      <div className="edu-year">Completed · 2023</div>
+                    </div>
+                    <span className="edu-badge edu-badge-done">Completed</span>
+                  </div>
+                  <div className="edu-tags">
+                    {["Physics", "Chemistry", "Mathematics", "Computer Science"].map(t => (
+                      <span key={t} className="edu-tag">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── 10th ── */}
+            <div className="edu-item" style={{ animation: eduVisible ? "eduFadeUp 0.65s ease 0.4s both" : "none", opacity: eduVisible ? undefined : 0 }}>
+              <div className="edu-dot-col">
+                <div className="edu-dot edu-dot-dim" />
+              </div>
+              <div>
+                <div className="edu-card">
+                  <div className="edu-card-header">
+                    <div>
+                      <div className="edu-degree">Class X · Secondary Education</div>
+                      <div className="edu-institution">
+                        <strong>Sri Rani Saraswati Vidya Mandir</strong> — Forbesganj, Bihar
+                      </div>
+                      <div className="edu-year">Completed · 2021</div>
+                    </div>
+                    <span className="edu-badge edu-badge-done">Completed</span>
+                  </div>
+                  <div className="edu-tags">
+                    {["Mathematics", "Science", "Social Studies", "English"].map(t => (
+                      <span key={t} className="edu-tag">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <div style={{
