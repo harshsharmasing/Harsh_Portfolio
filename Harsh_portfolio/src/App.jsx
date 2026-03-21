@@ -1412,8 +1412,8 @@ export default function Portfolio() {
                   animation: aboutVisible ? "fadeUp 0.8s ease 0.4s both" : "none",
                   opacity: aboutVisible ? undefined : 0,
                 }}>
-                  <div style={{ fontSize:26, fontWeight:800, lineHeight:1 }}>2+</div>
-                  <div style={{ fontSize:11, fontWeight:600, opacity:0.55, marginTop:2, letterSpacing:0.5 }}>Years Exp.</div>
+                  <div style={{ fontSize:26, fontWeight:800, lineHeight:1 }}>2.5+</div>
+                  <div style={{ fontSize:11, fontWeight:600, opacity:0.55, marginTop:2, letterSpacing:0.5 }}>Years Ler.</div>
                 </div>
               </div>
             </div>
@@ -1443,7 +1443,7 @@ export default function Portfolio() {
                   ["Name",     "Harsh Sharma"],
                   ["Role",     "Full Stack Developer"],
                   ["Location", "India"],
-                  ["Email",    "harsh@email.com"],
+                  ["Email",    "harshdrive8@email.com"],
                   ["Degree",   "B.Tech / BCA"],
                   ["Status",   "Available for work"],
                 ].map(([label, value]) => (
