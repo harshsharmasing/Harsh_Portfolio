@@ -619,6 +619,17 @@ export default function Portfolio() {
           transition:opacity 0.3s, width 0.3s;
         }
 
+        .cert-swipe-dots {
+          display:none;
+          justify-content:center; align-items:center;
+          gap:7px; margin-top:18px;
+        }
+        .cert-swipe-dot {
+          width:7px; height:7px; border-radius:999px;
+          background:#fff;
+          transition:opacity 0.3s;
+        }
+
         /* ══ CERTIFICATES SECTION ══ */
         @keyframes certFadeUp { from{opacity:0;transform:translateY(36px)} to{opacity:1;transform:translateY(0)} }
         @keyframes scrollNudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(7px)} }
@@ -674,7 +685,9 @@ export default function Portfolio() {
             padding-left:20px !important;
             padding-right:20px !important;
           }
-          .cert-card { flex:0 0 80vw !important; max-width:300px !important; }
+          .cert-card { flex:0 0 calc(100% - 40px) !important; max-width:100% !important; }
+          .certs-scroll-hint { display:none !important; }
+          .cert-swipe-dots { display:flex !important; }
         }
 
         .cert-card {
@@ -1813,11 +1826,68 @@ export default function Portfolio() {
             const runDemo = () => {
               if (window.innerWidth > 600) return;
               el._demoRan = true;
+
+              // Create swipe hint overlay
+              const hint = document.createElement("div");
+              hint.id = "swipe-hint-overlay";
+              hint.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;">
+                  <div id="swipe-hand" style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6));">👆</div>
+                  <div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:8px 18px;backdrop-filter:blur(8px);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                    <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Swipe</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </div>
+                </div>`;
+              Object.assign(hint.style, {
+                position:"absolute", inset:"0",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                zIndex:"20", pointerEvents:"none",
+                opacity:"0", transition:"opacity 0.4s ease",
+                borderRadius:"18px",
+              });
+              el.style.position = "relative";
+              el.appendChild(hint);
+
+              // Animate the hand icon sliding left
+              const styleTag = document.createElement("style");
+              styleTag.textContent = `
+                @keyframes swipeHandMove {
+                  0%   { transform: translateX(0px);   opacity:1; }
+                  50%  { transform: translateX(-32px);  opacity:1; }
+                  80%  { transform: translateX(-32px);  opacity:0; }
+                  100% { transform: translateX(0px);   opacity:0; }
+                }
+                #swipe-hand { animation: swipeHandMove 1.4s ease-in-out 0.2s both; }
+              `;
+              document.head.appendChild(styleTag);
+
               setTimeout(() => {
-                el.scrollTo({ left: el.offsetWidth * 0.55, behavior: "smooth" });
+                // Fade in hint
+                hint.style.opacity = "1";
+
                 setTimeout(() => {
-                  el.scrollTo({ left: 0, behavior: "smooth" });
-                }, 1100);
+                  // Peek scroll
+                  el.scrollTo({ left: el.offsetWidth * 0.55, behavior: "smooth" });
+
+                  setTimeout(() => {
+                    // Scroll back
+                    el.scrollTo({ left: 0, behavior: "smooth" });
+
+                    setTimeout(() => {
+                      // Fade out hint and clean up
+                      hint.style.opacity = "0";
+                      setTimeout(() => {
+                        hint.remove();
+                        styleTag.remove();
+                      }, 400);
+                    }, 700);
+                  }, 1100);
+                }, 600);
               }, 900);
             };
             if (!el._demoObserver) {
@@ -1958,7 +2028,80 @@ export default function Portfolio() {
           </div>
 
           {/* Cards grid */}
-          <div className="certs-grid">
+          <div className="certs-grid" ref={el => {
+            if (!el) return;
+            const total = 9;
+            const syncDots = () => {
+              const idx = Math.round(el.scrollLeft / el.offsetWidth);
+              for (let i = 0; i < total; i++) {
+                const dot = document.getElementById(`cert-dot-${i}`);
+                if (dot) dot.style.opacity = i === idx ? "1" : "0.25";
+              }
+            };
+            const runDemo = () => {
+              if (window.innerWidth > 600) return;
+              el._demoRan = true;
+
+              const hint = document.createElement("div");
+              hint.id = "cert-swipe-hint-overlay";
+              hint.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;">
+                  <div id="cert-swipe-hand" style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6));">👆</div>
+                  <div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:8px 18px;backdrop-filter:blur(8px);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                    <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Swipe</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </div>
+                </div>`;
+              Object.assign(hint.style, {
+                position:"absolute", inset:"0",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                zIndex:"20", pointerEvents:"none",
+                opacity:"0", transition:"opacity 0.4s ease",
+                borderRadius:"18px",
+              });
+              el.style.position = "relative";
+              el.appendChild(hint);
+
+              const styleTag = document.createElement("style");
+              styleTag.textContent = `
+                @keyframes certSwipeHandMove {
+                  0%   { transform: translateX(0px);  opacity:1; }
+                  50%  { transform: translateX(-32px); opacity:1; }
+                  80%  { transform: translateX(-32px); opacity:0; }
+                  100% { transform: translateX(0px);  opacity:0; }
+                }
+                #cert-swipe-hand { animation: certSwipeHandMove 1.4s ease-in-out 0.2s both; }
+              `;
+              document.head.appendChild(styleTag);
+
+              setTimeout(() => {
+                hint.style.opacity = "1";
+                setTimeout(() => {
+                  el.scrollTo({ left: el.offsetWidth * 0.55, behavior: "smooth" });
+                  setTimeout(() => {
+                    el.scrollTo({ left: 0, behavior: "smooth" });
+                    setTimeout(() => {
+                      hint.style.opacity = "0";
+                      setTimeout(() => { hint.remove(); styleTag.remove(); }, 400);
+                    }, 700);
+                  }, 1100);
+                }, 600);
+              }, 900);
+            };
+
+            if (!el._certDemoObserver) {
+              el.addEventListener("scroll", syncDots, { passive: true });
+              el._certDemoObserver = new IntersectionObserver(([entry]) => {
+                if (entry.isIntersecting && !el._demoRan) runDemo();
+              }, { threshold: 0.6 });
+              el._certDemoObserver.observe(el);
+            }
+          }}>
             {[
               {
                 img: cert9,
@@ -2075,6 +2218,14 @@ export default function Portfolio() {
                   </button>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Mobile swipe dots — visible only on mobile */}
+          <div className="cert-swipe-dots">
+            {Array.from({length:9}, (_,i) => (
+              <div key={i} className="cert-swipe-dot" id={`cert-dot-${i}`}
+                style={{ opacity: i === 0 ? 1 : 0.25 }} />
             ))}
           </div>
 
