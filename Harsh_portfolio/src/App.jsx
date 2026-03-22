@@ -2083,7 +2083,6 @@ export default function Portfolio() {
               }
             };
             const runDemo = () => {
-              if (window.innerWidth > 600) return;
               el._demoRan = true;
 
               const hint = document.createElement("div");
