@@ -12,6 +12,9 @@ import cert3 from "./assets/cert3.jpg";
 import cert4 from "./assets/cert4.jpg";
 import cert5 from "./assets/cert5.jpg";
 import cert6 from "./assets/cert6.jpg";
+import cert7 from "./assets/cert7.jpg";
+import cert8 from "./assets/cert8.jpg";
+import cert9 from "./assets/cert9.jpg";
 import harshcv from "./assets/harshcv.pdf";
 
 const LinkedInIcon = () => (
@@ -391,17 +394,37 @@ export default function Portfolio() {
         .tools-section { padding:100px 80px 90px; }
 
         .tools-grid {
-          display:grid;
-          grid-template-columns:repeat(3,1fr);
+          display:flex;
+          flex-direction:row;
           gap:24px;
+          overflow-x:auto;
+          scroll-snap-type:x mandatory;
+          -webkit-overflow-scrolling:touch;
+          scrollbar-width:none;
+          padding-bottom:12px;
+          cursor:grab;
+        }
+        .tools-grid::-webkit-scrollbar { display:none; }
+        .tools-grid:active { cursor:grabbing; }
+        .tool-card {
+          flex:0 0 calc((100vw - 160px - 160px - 48px) / 3);
+          min-width:260px;
+          scroll-snap-align:start;
         }
 
         @media (max-width:900px) {
-          .tools-grid { grid-template-columns:1fr 1fr !important; }
+          .tools-grid { padding-bottom:8px !important; }
+          .tool-card { flex:0 0 calc((100vw - 64px - 48px) / 2.2) !important; min-width:240px !important; }
           .tools-section { padding:80px 32px 60px !important; }
         }
         @media (max-width:600px) {
-          .tools-grid { grid-template-columns:1fr !important; }
+          .tools-grid {
+            flex-direction:column !important;
+            overflow-x:visible !important;
+            scroll-snap-type:none !important;
+            cursor:default !important;
+          }
+          .tool-card { flex:0 0 auto !important; width:100% !important; min-width:unset !important; }
           .tools-section { padding:72px 20px 52px !important; }
         }
 
@@ -1508,7 +1531,17 @@ export default function Portfolio() {
           </div>
 
           {/* Cards Grid */}
-          <div className="tools-grid">
+          <div
+            className="tools-grid"
+            ref={el => {
+              if (!el) return;
+              let isDown = false, startX, scrollLeft;
+              el.addEventListener("mousedown", e => { isDown=true; el.classList.add("active"); startX=e.pageX-el.offsetLeft; scrollLeft=el.scrollLeft; });
+              el.addEventListener("mouseleave", () => { isDown=false; el.classList.remove("active"); });
+              el.addEventListener("mouseup", () => { isDown=false; el.classList.remove("active"); });
+              el.addEventListener("mousemove", e => { if(!isDown) return; e.preventDefault(); const x=e.pageX-el.offsetLeft; el.scrollLeft=scrollLeft-(x-startX)*1.5; });
+            }}
+          >
 
             {/* ── FRONTEND ── */}
             {[
@@ -1555,6 +1588,21 @@ export default function Portfolio() {
                   </svg>
                 ),
                 tags: ["Git", "GitHub Actions", "Docker", "Linux", "Nginx", "Vercel", "CI/CD", "AWS"],
+              },
+              {
+                index: 3,
+                category: "04 / Creative",
+                title: "Video Editing",
+                description: "Crafting compelling visual stories through precise cuts, motion graphics, colour grading, and cinematic effects.",
+                accent: "rgba(255,255,255,0.9)",
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="M10 9l5 3-5 3V9z"/>
+                    <path d="M2 8h20"/>
+                  </svg>
+                ),
+                tags: ["Premiere Pro", "After Effects", "DaVinci Resolve", "CapCut", "Motion Graphics", "Colour Grading"],
               },
             ].map(({ index, category, title, description, icon, tags }) => (
               <div key={index} className="tool-card" style={{
@@ -1618,9 +1666,22 @@ export default function Portfolio() {
             ))}
           </div>
 
+          {/* Scroll hint */}
+          <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:28,
+            color:"rgba(255,255,255,0.25)", fontSize:11, fontWeight:600, letterSpacing:2.5,
+            textTransform:"uppercase", userSelect:"none" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+            Drag to explore
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+
           {/* Bottom ambient glow strip */}
           <div style={{
-            marginTop:72, height:1,
+            marginTop:44, height:1,
             background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)",
           }} />
         </section>
@@ -1813,7 +1874,7 @@ export default function Portfolio() {
                 </h2>
                 <div style={{ height:1, background:"rgba(255,255,255,0.08)", width:80 }} />
               </div>
-              <span style={{ fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:1 }}>6 certificates</span>
+              <span style={{ fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:1 }}>9 certificates</span>
             </div>
           </div>
 
@@ -1837,28 +1898,12 @@ export default function Portfolio() {
           <div className="certs-grid">
             {[
               {
-                img: cert1,
-                org: "ISRO / IIRS, Dehradun",
-                title: "Geo-data Sharing and Cyber Security",
-                meta: "Issued: Dec 2023  |  Duration: 28 Nov – 11 Dec 2023  |  15 Hours",
-                tags: ["Cyber Security", "Geo-data", "ISRO"],
+                img: cert9,
+                org: "Udemy",
+                title: "Master Generative AI & Generative AI tools (ChatGPT & more)",
+                meta: "Issued: 12 Dec 2025  |  Length: 14.5 Hours  |  Cert No: UC-6b3271bb",
+                tags: ["Generative AI", "ChatGPT", "14.5 Hours"],
                 delay: 0.1,
-              },
-              {
-                img: cert2,
-                org: "CSE Pathshala",
-                title: "C Programming Language",
-                meta: "Issued: 11 Aug 2025  |  Cert No: CP-20250607-RCPL-008",
-                tags: ["C Programming", "Live Training", "35+ Hours"],
-                delay: 0.22,
-              },
-              {
-                img: cert3,
-                org: "LPU / IAMNEO",
-                title: "Data Structures and Algorithm",
-                meta: "Issued: 05 Dec 2024  |  Duration: Aug – Dec 2024  |  72 Hours",
-                tags: ["DSA", "Algorithms", "72 Hours"],
-                delay: 0.34,
               },
               {
                 img: cert4,
@@ -1866,7 +1911,31 @@ export default function Portfolio() {
                 title: "Build Generative AI Apps and Solutions with No-Code Tools",
                 meta: "Issued: 12 Dec 2025  |  Length: 5.5 Hours  |  Cert No: UC-edc48522",
                 tags: ["Generative AI", "No-Code", "AI Tools"],
+                delay: 0.22,
+              },
+              {
+                img: cert8,
+                org: "Infosys Springboard",
+                title: "Computational Theory: Language Principle & Finite Automata Theory",
+                meta: "Issued: 11 Dec 2025",
+                tags: ["Computational Theory", "Automata", "Infosys"],
+                delay: 0.34,
+              },
+              {
+                img: cert7,
+                org: "Infosys Springboard",
+                title: "ChatGPT-4 Prompt Engineering: ChatGPT, Generative AI & LLM",
+                meta: "Issued: 11 Dec 2025",
+                tags: ["Prompt Engineering", "Generative AI", "LLM"],
                 delay: 0.46,
+              },
+              {
+                img: cert2,
+                org: "CSE Pathshala",
+                title: "C Programming Language",
+                meta: "Issued: 11 Aug 2025  |  Cert No: CP-20250607-RCPL-008",
+                tags: ["C Programming", "Live Training", "35+ Hours"],
+                delay: 0.58,
               },
               {
                 img: cert5,
@@ -1874,7 +1943,15 @@ export default function Portfolio() {
                 title: "Java Programming",
                 meta: "Issued: 05 May 2025  |  Duration: Jan – May 2025  |  72 Hours  |  Cert No: 14bI5Ae0bf5Cg2Bh1Bi1",
                 tags: ["Java", "Programming", "72 Hours"],
-                delay: 0.58,
+                delay: 0.70,
+              },
+              {
+                img: cert3,
+                org: "LPU / IAMNEO",
+                title: "Data Structures and Algorithm",
+                meta: "Issued: 05 Dec 2024  |  Duration: Aug – Dec 2024  |  72 Hours",
+                tags: ["DSA", "Algorithms", "72 Hours"],
+                delay: 0.82,
               },
               {
                 img: cert6,
@@ -1882,7 +1959,15 @@ export default function Portfolio() {
                 title: "Object Oriented Programming",
                 meta: "Issued: 05 Dec 2024  |  Duration: Aug – Dec 2024  |  72 Hours  |  Cert No: 17bg5Ch2Ai0D13d67",
                 tags: ["OOP", "Java", "72 Hours"],
-                delay: 0.70,
+                delay: 0.94,
+              },
+              {
+                img: cert1,
+                org: "ISRO / IIRS, Dehradun",
+                title: "Geo-data Sharing and Cyber Security",
+                meta: "Issued: 30 Jan 2024  |  Duration: 28 Nov – 11 Dec 2023  |  15 Hours",
+                tags: ["Cyber Security", "Geo-data", "ISRO"],
+                delay: 1.06,
               },
             ].map(({ img, org, title, meta, tags, delay }, i) => (
               <div key={i} className="cert-card" style={{
