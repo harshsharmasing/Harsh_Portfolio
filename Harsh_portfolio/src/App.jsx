@@ -606,6 +606,17 @@ export default function Portfolio() {
             scroll-snap-align:start !important;
           }
           .projects-section { padding:72px 14px 52px !important; }
+          .proj-swipe-dots { display:flex !important; }
+        }
+        .proj-swipe-dots {
+          display:none;
+          justify-content:center; align-items:center;
+          gap:7px; margin-top:18px;
+        }
+        .proj-swipe-dot {
+          width:7px; height:7px; border-radius:999px;
+          background:#fff;
+          transition:opacity 0.3s, width 0.3s;
         }
 
         /* ══ CERTIFICATES SECTION ══ */
@@ -1789,7 +1800,34 @@ export default function Portfolio() {
           </div>
 
           {/* ── SMALL cards row (02 03 04) ── */}
-          <div className="proj-small-grid">
+          <div className="proj-small-grid" ref={el => {
+            if (!el) return;
+            const nums = ["02","03","04"];
+            const syncDots = () => {
+              const idx = Math.round(el.scrollLeft / el.offsetWidth);
+              nums.forEach((n, i) => {
+                const dot = document.getElementById(`proj-dot-${n}`);
+                if (dot) dot.style.opacity = i === idx ? "1" : "0.25";
+              });
+            };
+            const runDemo = () => {
+              if (window.innerWidth > 600) return;
+              el._demoRan = true;
+              setTimeout(() => {
+                el.scrollTo({ left: el.offsetWidth * 0.55, behavior: "smooth" });
+                setTimeout(() => {
+                  el.scrollTo({ left: 0, behavior: "smooth" });
+                }, 1100);
+              }, 900);
+            };
+            if (!el._demoObserver) {
+              el.addEventListener("scroll", syncDots, { passive: true });
+              el._demoObserver = new IntersectionObserver(([entry]) => {
+                if (entry.isIntersecting && !el._demoRan) runDemo();
+              }, { threshold: 0.6 });
+              el._demoObserver.observe(el);
+            }
+          }}>
             {[
               { num:"02", img:proj2, title:"Eco Drive", desc:"A full-stack sustainability platform featuring a carbon footprint calculator, donation system, and eco-articles hub to drive green awareness.", tags:["MongoDB","Express","React","Node.js"],      live:"#", github:"#", isVideo:true },
               { num:"03", img:proj3, title:"Project Three", desc:"", tags:["Java","Spring Boot","MySQL"],      live:"#", github:"#", isVideo:false },
@@ -1861,6 +1899,14 @@ export default function Portfolio() {
                   </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Mobile swipe dots — visible only on mobile */}
+          <div className="proj-swipe-dots">
+            {["02","03","04"].map((n, i) => (
+              <div key={n} className="proj-swipe-dot" id={`proj-dot-${n}`}
+                style={{ opacity: i === 0 ? 1 : 0.25 }} />
             ))}
           </div>
 
