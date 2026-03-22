@@ -620,9 +620,9 @@ export default function Portfolio() {
         }
 
         .cert-swipe-dots {
-          display:none;
+          display:flex;
           justify-content:center; align-items:center;
-          gap:7px; margin-top:18px;
+          gap:7px; margin-top:24px;
         }
         .cert-swipe-dot {
           width:7px; height:7px; border-radius:999px;
@@ -680,14 +680,13 @@ export default function Portfolio() {
         @media(max-width:1100px) { .cert-card { flex:0 0 calc(50% - 12px) !important; } }
         @media(max-width:600px)  {
           .certs-grid {
-            margin-left:-20px !important;
-            margin-right:-20px !important;
-            padding-left:20px !important;
-            padding-right:20px !important;
+            margin-left:0 !important;
+            margin-right:0 !important;
+            padding-left:0 !important;
+            padding-right:0 !important;
           }
-          .cert-card { flex:0 0 calc(100% - 40px) !important; max-width:100% !important; }
+          .cert-card { flex:0 0 100% !important; max-width:100% !important; }
           .certs-scroll-hint { display:none !important; }
-          .cert-swipe-dots { display:flex !important; }
         }
 
         .cert-card {
@@ -1831,38 +1830,82 @@ export default function Portfolio() {
               const hint = document.createElement("div");
               hint.id = "swipe-hint-overlay";
               hint.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;">
-                  <div id="swipe-hand" style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6));">👆</div>
-                  <div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:8px 18px;backdrop-filter:blur(8px);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                    <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Swipe</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:none;">
+                  <div id="swipe-track">
+                    <div id="swipe-pill"></div>
+                    <div class="swipe-arrow-dot" style="animation-delay:0s"></div>
+                    <div class="swipe-arrow-dot" style="animation-delay:0.18s"></div>
+                    <div class="swipe-arrow-dot" style="animation-delay:0.36s"></div>
                   </div>
+                  <span id="swipe-label">swipe to explore</span>
                 </div>`;
               Object.assign(hint.style, {
                 position:"absolute", inset:"0",
                 display:"flex", alignItems:"center", justifyContent:"center",
                 zIndex:"20", pointerEvents:"none",
-                opacity:"0", transition:"opacity 0.4s ease",
+                opacity:"0", transition:"opacity 0.5s ease",
                 borderRadius:"18px",
+                background:"rgba(0,0,0,0.45)",
+                backdropFilter:"blur(6px)",
               });
               el.style.position = "relative";
               el.appendChild(hint);
 
-              // Animate the hand icon sliding left
               const styleTag = document.createElement("style");
               styleTag.textContent = `
-                @keyframes swipeHandMove {
-                  0%   { transform: translateX(0px);   opacity:1; }
-                  50%  { transform: translateX(-32px);  opacity:1; }
-                  80%  { transform: translateX(-32px);  opacity:0; }
-                  100% { transform: translateX(0px);   opacity:0; }
+                #swipe-track {
+                  position:relative;
+                  width:120px; height:44px;
+                  background:rgba(255,255,255,0.06);
+                  border:1px solid rgba(255,255,255,0.18);
+                  border-radius:999px;
+                  display:flex; align-items:center; justify-content:center; gap:6px;
+                  overflow:hidden;
                 }
-                #swipe-hand { animation: swipeHandMove 1.4s ease-in-out 0.2s both; }
+                #swipe-track::before {
+                  content:'';
+                  position:absolute; top:0; left:-60%;
+                  width:60%; height:100%;
+                  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+                  animation: swipeShimmer 1.6s ease-in-out 0.3s infinite;
+                }
+                #swipe-pill {
+                  width:28px; height:28px; border-radius:999px;
+                  background:#fff;
+                  box-shadow:0 0 16px rgba(255,255,255,0.5);
+                  animation: swipePillSlide 1.5s ease-in-out 0.2s infinite;
+                  flex-shrink:0;
+                }
+                .swipe-arrow-dot {
+                  width:5px; height:5px; border-radius:50%;
+                  background:rgba(255,255,255,0.5);
+                  animation: swipeDotFade 1.5s ease-in-out infinite;
+                }
+                #swipe-label {
+                  font-size:11px; font-weight:700;
+                  letter-spacing:3px; text-transform:uppercase;
+                  color:rgba(255,255,255,0.5);
+                  animation: swipeLabelPulse 1.5s ease-in-out infinite;
+                }
+                @keyframes swipePillSlide {
+                  0%   { transform:translateX(-18px); opacity:0; }
+                  20%  { opacity:1; }
+                  70%  { transform:translateX(28px);  opacity:1; }
+                  90%  { transform:translateX(28px);  opacity:0; }
+                  100% { transform:translateX(-18px); opacity:0; }
+                }
+                @keyframes swipeDotFade {
+                  0%,100% { opacity:0.2; }
+                  50%     { opacity:1; }
+                }
+                @keyframes swipeShimmer {
+                  0%   { left:-60%; }
+                  100% { left:160%; }
+                }
+                @keyframes swipeLabelPulse {
+                  0%,100% { opacity:0.4; }
+                  50%     { opacity:0.9; }
+                }
               `;
               document.head.appendChild(styleTag);
 
@@ -2032,7 +2075,8 @@ export default function Portfolio() {
             if (!el) return;
             const total = 9;
             const syncDots = () => {
-              const idx = Math.round(el.scrollLeft / el.offsetWidth);
+              const cardWidth = el.firstElementChild ? el.firstElementChild.offsetWidth + 24 : el.offsetWidth;
+              const idx = Math.round(el.scrollLeft / cardWidth);
               for (let i = 0; i < total; i++) {
                 const dot = document.getElementById(`cert-dot-${i}`);
                 if (dot) dot.style.opacity = i === idx ? "1" : "0.25";
@@ -2045,37 +2089,82 @@ export default function Portfolio() {
               const hint = document.createElement("div");
               hint.id = "cert-swipe-hint-overlay";
               hint.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;">
-                  <div id="cert-swipe-hand" style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6));">👆</div>
-                  <div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:8px 18px;backdrop-filter:blur(8px);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                    <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Swipe</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:none;">
+                  <div id="cert-swipe-track">
+                    <div id="cert-swipe-pill"></div>
+                    <div class="cert-swipe-arrow-dot" style="animation-delay:0s"></div>
+                    <div class="cert-swipe-arrow-dot" style="animation-delay:0.18s"></div>
+                    <div class="cert-swipe-arrow-dot" style="animation-delay:0.36s"></div>
                   </div>
+                  <span id="cert-swipe-label">swipe to explore</span>
                 </div>`;
               Object.assign(hint.style, {
                 position:"absolute", inset:"0",
                 display:"flex", alignItems:"center", justifyContent:"center",
                 zIndex:"20", pointerEvents:"none",
-                opacity:"0", transition:"opacity 0.4s ease",
+                opacity:"0", transition:"opacity 0.5s ease",
                 borderRadius:"18px",
+                background:"rgba(0,0,0,0.45)",
+                backdropFilter:"blur(6px)",
               });
               el.style.position = "relative";
               el.appendChild(hint);
 
               const styleTag = document.createElement("style");
               styleTag.textContent = `
-                @keyframes certSwipeHandMove {
-                  0%   { transform: translateX(0px);  opacity:1; }
-                  50%  { transform: translateX(-32px); opacity:1; }
-                  80%  { transform: translateX(-32px); opacity:0; }
-                  100% { transform: translateX(0px);  opacity:0; }
+                #cert-swipe-track {
+                  position:relative;
+                  width:120px; height:44px;
+                  background:rgba(255,255,255,0.06);
+                  border:1px solid rgba(255,255,255,0.18);
+                  border-radius:999px;
+                  display:flex; align-items:center; justify-content:center; gap:6px;
+                  overflow:hidden;
                 }
-                #cert-swipe-hand { animation: certSwipeHandMove 1.4s ease-in-out 0.2s both; }
+                #cert-swipe-track::before {
+                  content:'';
+                  position:absolute; top:0; left:-60%;
+                  width:60%; height:100%;
+                  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+                  animation: certSwipeShimmer 1.6s ease-in-out 0.3s infinite;
+                }
+                #cert-swipe-pill {
+                  width:28px; height:28px; border-radius:999px;
+                  background:#fff;
+                  box-shadow:0 0 16px rgba(255,255,255,0.5);
+                  animation: certSwipePillSlide 1.5s ease-in-out 0.2s infinite;
+                  flex-shrink:0;
+                }
+                .cert-swipe-arrow-dot {
+                  width:5px; height:5px; border-radius:50%;
+                  background:rgba(255,255,255,0.5);
+                  animation: certSwipeDotFade 1.5s ease-in-out infinite;
+                }
+                #cert-swipe-label {
+                  font-size:11px; font-weight:700;
+                  letter-spacing:3px; text-transform:uppercase;
+                  color:rgba(255,255,255,0.5);
+                  animation: certSwipeLabelPulse 1.5s ease-in-out infinite;
+                }
+                @keyframes certSwipePillSlide {
+                  0%   { transform:translateX(-18px); opacity:0; }
+                  20%  { opacity:1; }
+                  70%  { transform:translateX(28px);  opacity:1; }
+                  90%  { transform:translateX(28px);  opacity:0; }
+                  100% { transform:translateX(-18px); opacity:0; }
+                }
+                @keyframes certSwipeDotFade {
+                  0%,100% { opacity:0.2; }
+                  50%     { opacity:1; }
+                }
+                @keyframes certSwipeShimmer {
+                  0%   { left:-60%; }
+                  100% { left:160%; }
+                }
+                @keyframes certSwipeLabelPulse {
+                  0%,100% { opacity:0.4; }
+                  50%     { opacity:0.9; }
+                }
               `;
               document.head.appendChild(styleTag);
 
