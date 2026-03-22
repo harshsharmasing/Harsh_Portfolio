@@ -173,73 +173,130 @@ export default function Portfolio() {
           padding:6px; z-index:300;
         }
         .ham-btn span {
-          display:block; width:22px; height:2px;
+          display:block; height:2px;
           background:#fff; border-radius:2px;
-          transition:transform 0.3s, opacity 0.3s;
+          transition:transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s, width 0.4s;
         }
-        .ham-btn.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
-        .ham-btn.open span:nth-child(2) { opacity:0; }
-        .ham-btn.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+        .ham-btn span:nth-child(1) { width:22px; }
+        .ham-btn span:nth-child(2) { width:15px; }
+        .ham-btn span:nth-child(3) { width:22px; }
+        .ham-btn.open span:nth-child(1) { width:22px; transform:translateY(7px) rotate(45deg); }
+        .ham-btn.open span:nth-child(2) { opacity:0; transform:translateX(-6px); }
+        .ham-btn.open span:nth-child(3) { width:22px; transform:translateY(-7px) rotate(-45deg); }
 
         /* ── Mobile drawer backdrop ── */
         .mobile-drawer-backdrop {
           display:none;
           position:fixed; inset:0;
-          background:rgba(0,0,0,0.45);
+          background:rgba(0,0,0,0.3);
           z-index:240;
           backdrop-filter:blur(2px);
           animation:fadeIn 0.25s ease;
         }
         .mobile-drawer-backdrop.open { display:block; }
 
-        /* ── Mobile drawer: right-side glass panel ── */
+        /* ── Mobile drawer: compact top-right card ── */
         .mobile-drawer {
-          position:fixed; top:0; right:0; bottom:0;
-          width:min(75vw, 260px);
-          background:rgba(12,12,12,0.6);
-          backdrop-filter:blur(32px) saturate(1.8);
-          -webkit-backdrop-filter:blur(32px) saturate(1.8);
-          border-left:1px solid rgba(255,255,255,0.1);
-          box-shadow:-20px 0 60px rgba(0,0,0,0.55);
+          position:fixed; top:14px; right:14px;
+          width:220px;
+          background:rgba(14,14,14,0.92);
+          backdrop-filter:blur(28px) saturate(1.8);
+          -webkit-backdrop-filter:blur(28px) saturate(1.8);
+          border:1px solid rgba(255,255,255,0.1);
+          border-radius:20px;
+          box-shadow:0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset;
           z-index:250;
           display:flex;
           flex-direction:column;
-          align-items:flex-start;
-          justify-content:flex-start;
-          gap:4px;
-          padding:72px 28px 40px;
-          transform:translateX(100%);
-          transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);
+          padding:18px 0 14px;
+          transform:scale(0.88) translateY(-12px);
+          transform-origin:top right;
+          opacity:0;
+          pointer-events:none;
+          transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+          overflow:hidden;
         }
-        .mobile-drawer.open { transform:translateX(0); }
+        .mobile-drawer::before {
+          content:'';
+          position:absolute; top:0; left:0; right:0; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+        }
+        .mobile-drawer.open {
+          transform:scale(1) translateY(0);
+          opacity:1;
+          pointer-events:all;
+        }
         .mobile-drawer-label {
-          font-size:10px; font-weight:700; letter-spacing:3px;
-          text-transform:uppercase; color:rgba(255,255,255,0.28);
-          margin-bottom:12px; padding:0;
+          font-size:9px; font-weight:700; letter-spacing:3.5px;
+          text-transform:uppercase; color:rgba(255,255,255,0.2);
+          padding:0 18px; margin-bottom:10px;
         }
         .mobile-drawer-divider {
-          width:100%; height:1px;
-          background:rgba(255,255,255,0.07);
-          margin-bottom:16px;
+          height:1px;
+          background:rgba(255,255,255,0.06);
+          margin:0 0 6px;
         }
-        .mobile-drawer a, .mobile-drawer span.drawer-link {
-          font-size:16px; font-weight:600; color:#fff;
-          cursor:pointer; opacity:0.72;
-          transition:opacity 0.18s, transform 0.18s, padding-left 0.18s;
-          padding:9px 0;
+        .mobile-drawer span.drawer-link {
+          font-size:14px; font-weight:600; color:rgba(255,255,255,0.78);
+          cursor:pointer;
+          padding:9px 18px;
           width:100%;
           display:flex; align-items:center; gap:10px;
-          letter-spacing:0.2px;
+          letter-spacing:0.1px;
+          transition:background 0.18s, color 0.18s;
+          position:relative;
+          opacity:0;
+          transform:translateX(10px);
         }
-        .mobile-drawer a:hover, .mobile-drawer span.drawer-link:hover {
-          opacity:1; transform:translateX(5px);
+        .mobile-drawer.open span.drawer-link {
+          opacity:1; transform:translateX(0);
+        }
+        .mobile-drawer.open span.drawer-link:nth-child(3)  { transition:opacity 0.25s ease 0.04s, transform 0.25s ease 0.04s, background 0.18s, color 0.18s; }
+        .mobile-drawer.open span.drawer-link:nth-child(4)  { transition:opacity 0.25s ease 0.08s, transform 0.25s ease 0.08s, background 0.18s, color 0.18s; }
+        .mobile-drawer.open span.drawer-link:nth-child(5)  { transition:opacity 0.25s ease 0.12s, transform 0.25s ease 0.12s, background 0.18s, color 0.18s; }
+        .mobile-drawer.open span.drawer-link:nth-child(6)  { transition:opacity 0.25s ease 0.16s, transform 0.25s ease 0.16s, background 0.18s, color 0.18s; }
+        .mobile-drawer.open span.drawer-link:nth-child(7)  { transition:opacity 0.25s ease 0.20s, transform 0.25s ease 0.20s, background 0.18s, color 0.18s; }
+        .mobile-drawer.open span.drawer-link:nth-child(8)  { transition:opacity 0.25s ease 0.24s, transform 0.25s ease 0.24s, background 0.18s, color 0.18s; }
+        .mobile-drawer.open span.drawer-link:nth-child(9)  { transition:opacity 0.25s ease 0.28s, transform 0.25s ease 0.28s, background 0.18s, color 0.18s; }
+        .mobile-drawer span.drawer-link:hover {
+          background:rgba(255,255,255,0.06);
+          color:#fff;
         }
         .drawer-dot {
           width:5px; height:5px; border-radius:50%;
-          background:rgba(255,255,255,0.3); flex-shrink:0;
-          transition:background 0.18s;
+          background:rgba(255,255,255,0.18); flex-shrink:0;
+          transition:background 0.18s, transform 0.18s;
         }
-        .mobile-drawer span.drawer-link:hover .drawer-dot { background:rgba(255,255,255,0.9); }
+        .mobile-drawer span.drawer-link:hover .drawer-dot {
+          background:rgba(255,255,255,0.7);
+          transform:scale(1.3);
+        }
+        .mobile-drawer-divider { display:block; }
+
+        /* bottom social strip */
+        .drawer-socials {
+          display:flex; align-items:center; gap:6px;
+          padding:10px 18px 2px;
+          border-top:1px solid rgba(255,255,255,0.06);
+          margin-top:6px;
+          opacity:0;
+          transition:opacity 0.3s ease 0.3s;
+        }
+        .mobile-drawer.open .drawer-socials { opacity:1; }
+        .drawer-social-btn {
+          width:30px; height:30px; border-radius:50%;
+          border:1px solid rgba(255,255,255,0.1);
+          background:rgba(255,255,255,0.04);
+          display:flex; align-items:center; justify-content:center;
+          color:rgba(255,255,255,0.45);
+          transition:border-color 0.2s, background 0.2s, color 0.2s;
+          text-decoration:none;
+        }
+        .drawer-social-btn:hover {
+          border-color:rgba(255,255,255,0.35);
+          background:rgba(255,255,255,0.08);
+          color:#fff;
+        }
 
         /* Desktop nav ul */
         .nav-ul { display:flex; gap:28px; list-style:none; }
@@ -1289,25 +1346,10 @@ export default function Portfolio() {
           onClick={() => setMenuOpen(false)}
         />
 
-        {/* Mobile drawer – right-side glass panel */}
+        {/* Mobile drawer – compact top-right card */}
         <div className={`mobile-drawer${menuOpen ? " open" : ""}`}>
-          {/* Close button */}
-          <button
-            onClick={() => setMenuOpen(false)}
-            style={{
-              position:"absolute", top:16, right:16,
-              width:36, height:36, borderRadius:"50%",
-              background:"rgba(255,255,255,0.07)",
-              border:"1px solid rgba(255,255,255,0.15)",
-              color:"#fff", fontSize:16, lineHeight:1,
-              cursor:"pointer", display:"flex",
-              alignItems:"center", justifyContent:"center",
-              transition:"background 0.2s",
-            }}
-            aria-label="Close menu"
-          >✕</button>
 
-          <span className="mobile-drawer-label">Navigation</span>
+          <span className="mobile-drawer-label">Navigate</span>
           <div className="mobile-drawer-divider" />
 
           {navLinks.map((link) => (
@@ -1325,6 +1367,18 @@ export default function Portfolio() {
               {link}
             </span>
           ))}
+
+          {/* Social strip */}
+          <div className="drawer-socials">
+            <a href="https://github.com/harshsharmasing" target="_blank" rel="noreferrer" className="drawer-social-btn"><GitHubIcon /></a>
+            <a href="https://www.linkedin.com/in/harshrsh" target="_blank" rel="noreferrer" className="drawer-social-btn"><LinkedInIcon /></a>
+            <a href="mailto:harshdrive8@gmail.com" className="drawer-social-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </a>
+          </div>
+
         </div>
 
         {/* ══════════ HERO ══════════ */}
