@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import profileImg from "./assets/profile.png";
 import contactpic from "./assets/contactpic.png";
 import aboutpic from "./assets/aboutpic.jpeg";
-import proj1 from "./assets/1.jpg";
+import proj1 from "./assets/proj1.mp4";
 import proj2 from "./assets/2.jpg";
 import proj3 from "./assets/3.jpg";
 import proj4 from "./assets/4.jpg";
@@ -443,7 +443,8 @@ export default function Portfolio() {
           transition:transform 0.7s ease, filter 0.5s ease;
           filter:brightness(0.75) saturate(0.85);
         }
-        .proj-featured:hover .proj-featured-img img {
+        .proj-featured:hover .proj-featured-img img,
+        .proj-featured:hover .proj-featured-img video {
           transform:scale(1.06);
           filter:brightness(0.95) saturate(1.1);
         }
@@ -1658,9 +1659,18 @@ export default function Portfolio() {
             animation: projVisible ? "projFadeUp 0.7s ease 0.1s both" : "none",
             opacity: projVisible ? undefined : 0,
           }}>
-            {/* Left: image */}
+            {/* Left: video */}
             <div className="proj-featured-img">
-              <img src={proj1} alt="AES Encryption For Passwords" />
+              <video
+                src={proj1}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  transition:"transform 0.7s ease, filter 0.5s ease",
+                  filter:"brightness(0.75) saturate(0.85)" }}
+              />
             </div>
 
             {/* Right: content */}
