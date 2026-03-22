@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import emailjs from "@emailjs/browser";
 import profileImg from "./assets/profile.png";
 import contactpic from "./assets/contactpic.png";
 import aboutpic from "./assets/aboutpic.jpeg";
@@ -107,6 +108,10 @@ export default function Portfolio() {
   const certRef = useRef(null);
   const eduRef  = useRef(null);
 
+  // Contact form state
+  const [formData, setFormData]     = useState({ name:"", email:"", message:"" });
+  const [formStatus, setFormStatus] = useState("idle"); // idle | sending | success | error
+
   // Scroll-spy: update active nav link as user scrolls
   useEffect(() => {
     const sections = [
@@ -152,6 +157,27 @@ export default function Portfolio() {
 
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   const navLinks = ["Home", "About", "Tools", "Projects", "Certificates", "Education", "Contact Me"];
+
+  const handleSend = () => {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setFormStatus("error");
+      return;
+    }
+    setFormStatus("sending");
+    emailjs.send(
+      "service_xeoo3ft",
+      "template_9ngf4ep",
+      { from_name: formData.name, from_email: formData.email, message: formData.message },
+      "RbqyrO1OKVgVECnS5"
+    ).then(() => {
+      setFormStatus("success");
+      setFormData({ name:"", email:"", message:"" });
+      setTimeout(() => setFormStatus("idle"), 4000);
+    }).catch(() => {
+      setFormStatus("error");
+      setTimeout(() => setFormStatus("idle"), 4000);
+    });
+  };
 
   return (
     <>
@@ -311,6 +337,7 @@ export default function Portfolio() {
         @keyframes fadeIn    { from{opacity:0} to{opacity:1} }
         @keyframes slideLeft { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
         @keyframes slideRight{ from{opacity:0;transform:translateX(40px)}  to{opacity:1;transform:translateX(0)} }
+        @keyframes spin      { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
         /* ══ DESKTOP ══ */
         .hero { height:100vh; }
@@ -2586,15 +2613,64 @@ export default function Portfolio() {
               <p className="contact-form-sub">Fill out the form and I'll get back to you as soon as possible.</p>
 
               <div style={{ display:"flex", flexDirection:"column", gap:12, position:"relative", zIndex:1 }}>
-                <input className="contact-input" type="text" placeholder="Your Name" />
-                <input className="contact-input" type="email" placeholder="Your Email" />
-                <textarea className="contact-input" rows={5} placeholder="Your Message" />
-                <button className="contact-submit-btn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                  </svg>
-                  Send Message
+                <input className="contact-input" type="text" placeholder="Your Name"
+                  value={formData.name}
+                  onChange={e => setFormData(p => ({ ...p, name: e.target.value }))} />
+                <input className="contact-input" type="email" placeholder="Your Email"
+                  value={formData.email}
+                  onChange={e => setFormData(p => ({ ...p, email: e.target.value }))} />
+                <textarea className="contact-input" rows={5} placeholder="Your Message"
+                  value={formData.message}
+                  onChange={e => setFormData(p => ({ ...p, message: e.target.value }))} />
+
+                {/* Status messages */}
+                {formStatus === "success" && (
+                  <div style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 16px",
+                    borderRadius:10, background:"rgba(255,255,255,0.06)",
+                    border:"1px solid rgba(255,255,255,0.15)", color:"rgba(255,255,255,0.85)",
+                    fontSize:13, fontWeight:600 }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Message sent! I'll get back to you soon.
+                  </div>
+                )}
+                {formStatus === "error" && (
+                  <div style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 16px",
+                    borderRadius:10, background:"rgba(255,80,80,0.08)",
+                    border:"1px solid rgba(255,80,80,0.25)", color:"rgba(255,120,120,0.9)",
+                    fontSize:13, fontWeight:600 }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    {!formData.name.trim() || !formData.email.trim() || !formData.message.trim()
+                      ? "Please fill in all fields."
+                      : "Something went wrong. Try again."}
+                  </div>
+                )}
+
+                <button className="contact-submit-btn"
+                  onClick={handleSend}
+                  disabled={formStatus === "sending"}
+                  style={{ opacity: formStatus === "sending" ? 0.7 : 1, cursor: formStatus === "sending" ? "not-allowed" : "pointer" }}>
+                  {formStatus === "sending" ? (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                        style={{ animation:"spin 1s linear infinite" }}>
+                        <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/>
+                        <path d="M12 2a10 10 0 0 1 10 10" />
+                      </svg>
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                      </svg>
+                      Send Message
+                    </>
+                  )}
                 </button>
               </div>
             </div>
