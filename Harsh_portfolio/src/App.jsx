@@ -1558,11 +1558,11 @@ export default function Portfolio() {
               </h3>
               <p style={{ fontSize:15, lineHeight:1.85, color:"rgba(255,255,255,0.62)",
                 marginBottom:12, textAlign:"left", width:"100%" }}>
-                I’m Harsh Sharma, a B.Tech student exploring web development and Java. I learn by building, breaking, and improving real projects rather than just studying theory.
+                I’m Harsh Sharma, a B.Tech student who got into web development out of curiosity and slowly started enjoying the process of building things from scratch. In the beginning, I focused on understanding the basics, but over time I’ve started working on real projects to improve my skills and confidence.
               </p>
               <p style={{ fontSize:15, lineHeight:1.85, color:"rgba(255,255,255,0.62)",
                 marginBottom:36, textAlign:"left", width:"100%" }}>
-                I’m currently focused on strengthening my problem-solving skills and becoming a developer who can build practical, real-world solutions. My journey is simple—consistent growth, one step at a time.
+                Right now, I’m trying to become better every day — learning, making mistakes, and fixing them. My aim is to grow into a full-stack developer who can build useful, real-world applications that actually solve problems.
               </p>
 
               <div className="info-grid" style={{
@@ -2023,9 +2023,9 @@ export default function Portfolio() {
             }
           }}>
             {[
-              { num:"02", img:proj2, title:"Eco Drive", desc:"A full-stack sustainability platform featuring a carbon footprint calculator, donation system, and eco-articles hub to drive green awareness.", tags:["MongoDB","Express","React","Node.js"],      live:"#", github:"#", isVideo:true },
-              { num:"03", img:proj3, title:"Project Three", desc:"", tags:["Java","Spring Boot","MySQL"],      live:"#", github:"#", isVideo:false },
-              { num:"04", img:proj4, title:"Project Four",  desc:"", tags:["Next.js","Tailwind","PostgreSQL"], live:"#", github:"#", isVideo:false },
+              { num:"02", img:proj2, title:"Eco Drive", desc:"A full-stack sustainability platform featuring a carbon footprint calculator, donation system, and eco-articles hub to drive green awareness.", tags:["MongoDB","Express","React","Node.js"],      live:"https://github.com/harshsharmasing/ECO_DRIVE.git", github:"https://github.com/harshsharmasing/ECO_DRIVE.git", isVideo:true },
+              { num:"03", img:proj3, title:"Smart Yoga App", desc:"An AI-powered yoga assistant that uses your camera to detect body poses in real time and provides live feedback and suggestions on your yoga form. Just open the app, strike a pose, and let the app guide your practice.", tags:["React","TensorFlow.js","PoseNet","JavaScript"], live:"https://harshsharmasing.github.io/Smart-Yoga-App/", github:"https://github.com/harshsharmasing/Smart-Yoga-App.git", isVideo:false },
+              { num:"04", img:proj4, title:"FileVault – Secure File Sharing", desc:"A full-stack MERN app where users can register, login, upload files, and share unique download links with anyone. Features JWT authentication, bcrypt password hashing, Cloudinary storage, drag-and-drop uploads, and a public shareable file view page — no login needed to download.", tags:["React","Node.js","Express","MongoDB","Cloudinary","JWT"], live:"https://github.com/harshsharmasing/secure-file-share.git", github:"https://github.com/harshsharmasing/secure-file-share.git", isVideo:false },
             ].map(({ num, img, title, desc, tags, live, github, isVideo }, i) => (
               <div key={num} className="proj-small" style={{
                 animation: projVisible ? `projFadeUp 0.65s ease ${0.25 + i * 0.12}s both` : "none",
