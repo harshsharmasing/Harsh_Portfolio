@@ -1573,7 +1573,7 @@ export default function Portfolio() {
                   ["Role",     "Full Stack Developer"],
                   ["Location", "India"],
                   ["Email",    "harshdrive8@email.com"],
-                  ["Degree",   "B.Tech / BCA"],
+                  ["Degree",   "B.Tech"],
                   ["Status",   "Available for work"],
                 ].map(([label, value]) => (
                   <div key={label} style={{ display:"flex", gap:8, alignItems:"baseline" }}>
